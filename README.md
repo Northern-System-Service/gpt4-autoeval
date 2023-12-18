@@ -4,6 +4,14 @@ GPT-4 を用いて、言語モデルの応答を自動評価するスクリプ�
 
 ## 使用方法
 
+### LLM によるテキスト生成
+
+`notebooks` ディレクトリ配下にあるノートブックを実行することで、評価対象のLLMに ELYZA-tasks-100 データセットの各質問に対する回答が生成できる。
+ノートブックは、[Google Colaboratory](https://colab.research.google.com/) などで実行可能。
+
+生成されたテキストは `preds.jsonl` という名前の JSONL ファイルに書き出される。
+このファイルをダウンロードする。
+
 ### ELYZA データセットのダウンロード
 
 HuggingFace🤗 から ELYZA-tasks-100 データセットをダウンロードする。
