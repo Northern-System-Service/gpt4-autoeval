@@ -17,8 +17,8 @@ GPT-4 を用いて、言語モデルの応答を自動評価するスクリプ�
 HuggingFace🤗 から ELYZA-tasks-100 データセットをダウンロードする。
 
 ```console
-$ docker-compose build
-$ docker-compose run gpt4eval python /opt/gpt4eval/download_elyza.py
+$ docker compose build
+$ docker compose run gpt4eval python /opt/gpt4eval/download_elyza.py
 ```
 
 ファイルは `assets/elyza_tasks_100/dataset.jsonl` に保存される。
@@ -34,6 +34,13 @@ $ docker-compose run gpt4eval python /opt/gpt4eval/download_elyza.py
 assets/<DATASET_NAME>/
  - dataset.jsonl
  - preds.jsonl
+```
+
+OpenAI API キーを発行し ([link](https://platform.openai.com/api-keys))、 `secrets/OPENAI_API_KEY` に置く (行末は**改行しない**)。
+
+```console
+$ cat secrets/OPENAI_API_KEY
+my-OPeNAiKeY...
 ```
 
 その後、下記コマンドを実行する。
