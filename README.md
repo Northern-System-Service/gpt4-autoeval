@@ -51,6 +51,8 @@ $ DATASET_NAME=<DATASET_NAME> docker compose up --build
 
 評価結果は JSONL 形式で `assets/<DATASET_NAME>/result.jsonl` に保存される。
 
+Google スプレッドシートで結果を一覧表示する場合（[表示例](https://docs.google.com/spreadsheets/d/1nOWtneRdrkxwQbAN0rWmXqiJXR9IXK9lVkyDjQTqNGc/edit?usp=sharing)）は、 `<DATASET_NAME>/{preds,results}.jsonl` を Google Drive にコピーし、`tools/copy_jsonl_to_google_spreadsheet.js` を Google Apps Script として実行する。
+
 ## 動作環境
 
 * Linux (kernel 5.15.133.1)
