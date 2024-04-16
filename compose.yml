@@ -9,6 +9,8 @@ services:
       - OPENAI_API_KEY
     environment:
       - DATASET_NAME
+      - PROCESS_MODE
+      - BATCH_TASK
 
 secrets:
   OPENAI_API_KEY:

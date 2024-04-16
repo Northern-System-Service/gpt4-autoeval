@@ -3,14 +3,8 @@ import json
 from openai import OpenAI
 from tenacity import retry, stop_after_attempt, wait_random_exponential
 
-
-with open("./assets/prompt_eval.txt") as f:
-    template_prompt = f.read()
-
-with open("/run/secrets/OPENAI_API_KEY") as f:
-    OPENAI_API_KEY = f.read()
-
-client = OpenAI(api_key=OPENAI_API_KEY)
+from lib.openai_judge import template_prompt
+from lib.openai_client import client
 
 
 @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(10))

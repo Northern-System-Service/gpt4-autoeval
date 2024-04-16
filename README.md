@@ -23,7 +23,7 @@ $ docker compose run gpt4eval python /opt/gpt4eval/download_elyza.py
 
 ファイルは `assets/elyza_tasks_100/dataset.jsonl` に保存される。
 
-### 評価
+### 評価の準備
 
 下記のように、`assets/<DATASET_NAME>` にデータセット・LLMの応答を JSONL 形式で配置する。
 （フォーマットの詳細は `assets/test` を参照）
@@ -43,13 +43,44 @@ $ cat secrets/OPENAI_API_KEY
 my-OPeNAiKeY...
 ```
 
-その後、下記コマンドを実行する。
+### 評価
+
+評価方法は、下記の2通りから選択できる。
+
+* **`sequential` モード**（デフォルト）: LLMの応答を1つずつ OpenAI API に送信し、評価する。評価結果は、標準出力に順次表示される。
+* **`batch` モード**: OpenAI API の[バッチ推論機能](https://platform.openai.com/docs/api-reference/batch) を使用する。結果は 24 時間以内に返却される。API利用料が割安。
+
+#### `sequential` モード
 
 ```console
 $ DATASET_NAME=<DATASET_NAME> docker compose up --build
 ```
 
 評価結果は JSONL 形式で `assets/<DATASET_NAME>/result.jsonl` に保存される。
+
+#### `batch` モード
+
+バッチ推論ジョブを作成する。
+
+```console
+$ DATASET_NAME=<DATASET_NAME> PROCESS_MODE=batch BATCH_TASK=submit \
+        docker compose up --build
+```
+
+ジョブIDが `assets/<DATASET_NAME>/batch_id.txt` に保存される。
+
+ジョブの結果を取得する。
+
+```console
+$ DATASET_NAME=<DATASET_NAME> PROCESS_MODE=batch BATCH_TASK=retrieve \
+        docker compose up --build
+```
+
+ジョブが未完了の場合は、その旨が表示される。
+
+ジョブが完了した場合、評価結果は JSONL 形式で `assets/<DATASET_NAME>/result.jsonl` に保存される。
+
+### 結果の一覧表示
 
 Google スプレッドシートで結果を一覧表示する場合（[表示例](https://docs.google.com/spreadsheets/d/1nOWtneRdrkxwQbAN0rWmXqiJXR9IXK9lVkyDjQTqNGc/edit?usp=sharing)）は、 `<DATASET_NAME>/{preds,results}.jsonl` を Google Drive にコピーし、`tools/copy_jsonl_to_google_spreadsheet.js` を Google Apps Script として実行する。
 
