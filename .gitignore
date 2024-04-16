@@ -1,5 +1,7 @@
 secrets/*
 !secrets/.gitkeep
+batch_id.txt
+batch_job_requests.jsonl
 
 # Swap
 [._]*.s[a-v][a-z]
