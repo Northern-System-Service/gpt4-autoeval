@@ -65,7 +65,7 @@ def main():
             results = download_results(client, output_file_id)
             formatted_results = format_results(results)
 
-            with open(asset_base_path / 'batch_results.jsonl', 'w') as f:
+            with open(asset_base_path / 'result.jsonl', 'w') as f:
                 f.write(formatted_results)
 
             print("Results have been saved.")

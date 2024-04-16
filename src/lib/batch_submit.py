@@ -11,9 +11,9 @@ from lib.openai_client import client
 asset_base_path = Path("assets") / os.environ.get("DATASET_NAME")
 
 
-def load_dataset():
+def prepare_job_requests():
     """
-    Load the dataset for processing
+    Prepare the job instructions for the batch job
     """
     preds = read_jsonl(asset_base_path / "preds.jsonl")
     dataset = read_jsonl(asset_base_path / "dataset.jsonl")
@@ -59,7 +59,7 @@ def prepare_jsonl_data(dataset):
     """
     Prepare the dataset in JSONL format for uploading to OpenAI API
     """
-    with jsonlines.open(asset_base_path / "prompt_file.jsonl", mode='w') as writer:
+    with jsonlines.open(asset_base_path / "batch_job_requests.jsonl", mode='w') as writer:
         for data in dataset:
             # Assuming `data` is a dictionary with necessary structure
             writer.write(data)
@@ -70,7 +70,7 @@ def upload_file(client):
     Upload the JSONL file to OpenAI API
     """
     response = client.files.create(
-        file=open(asset_base_path / "prompt_file.jsonl", 'rb'),
+        file=open(asset_base_path / "batch_job_requests.jsonl", 'rb'),
         purpose='batch'
     )
     return response.id
@@ -89,9 +89,8 @@ def create_batch(client, input_file_id):
 
 
 def main():
-    # Assuming `load_dataset()` is a function that loads your data for processing
-    dataset = load_dataset()
-    prepare_jsonl_data(dataset)
+    job_requests = prepare_job_requests()
+    prepare_jsonl_data(job_requests)
 
     file_id = upload_file(client)
     print(f"File uploaded, ID: {file_id}")

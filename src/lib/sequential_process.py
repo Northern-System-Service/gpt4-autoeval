@@ -10,10 +10,8 @@ from lib.common import read_jsonl
 def main():
     # Load dataset
     dataset_name = os.environ.get('DATASET_NAME', 'test')
-    print(f"dataset_name: {dataset_name}")
     preds = read_jsonl(f"assets/{dataset_name}/preds.jsonl")
     dataset = read_jsonl(f"assets/{dataset_name}/dataset.jsonl")
-
 
     with jsonlines.open(f'assets/{dataset_name}/result.jsonl', mode='w') as writer:
         # Evaluate each sample of the dataset, and write the result to the file
