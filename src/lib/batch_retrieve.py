@@ -5,6 +5,7 @@ from pathlib import Path
 
 import jsonlines
 
+from lib.common import _validate_response
 from lib.openai_client import client
 
 asset_base_path = Path("assets") / os.environ.get("DATASET_NAME")
@@ -48,6 +49,21 @@ def format_results(results):
     return output_stream.getvalue()
 
 
+def validate_results(file_path):
+    """
+    Validate the schema of the results file.
+    """
+    anomalies = []
+    with jsonlines.open(file_path, mode='r') as reader:
+        for i, record in enumerate(reader):
+            try:
+                _validate_response(record)
+            except ValueError as e:
+                anomalies.append((i, str(e)))
+
+    return anomalies
+
+
 def main():
     # Load the batch ID from file
     with open(asset_base_path / 'batch_id.txt', 'r') as f:
@@ -62,13 +78,26 @@ def main():
         output_file_id = batch.output_file_id
 
         if output_file_id:
+            # Download the results
             results = download_results(client, output_file_id)
             formatted_results = format_results(results)
+            results_path = asset_base_path / 'result.jsonl'
 
-            with open(asset_base_path / 'result.jsonl', 'w') as f:
+            with open(results_path, 'w') as f:
                 f.write(formatted_results)
 
             print("Results have been saved.")
+
+            # Validate the results
+            # Does not raise an exception, just prints out the anomalies
+            anomalies = validate_results(results_path)
+            if anomalies:
+                print("Anomalies found in the results:")
+                for index, error in anomalies:
+                    print(f"Record {index}: {error}")
+            else:
+                print("All results are valid.")
+
         else:
             print("No output file available.")
     else:

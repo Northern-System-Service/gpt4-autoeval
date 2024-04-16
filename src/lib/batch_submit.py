@@ -5,7 +5,7 @@ import uuid
 import jsonlines
 
 from lib.openai_judge import template_prompt
-from lib.common import read_jsonl
+from lib.common import get_openai_request_body, read_jsonl
 from lib.openai_client import client
 
 asset_base_path = Path("assets") / os.environ.get("DATASET_NAME")
@@ -39,16 +39,7 @@ def prepare_job_requests():
             "custom_id": str(uuid.uuid4()),  # Generating a unique ID for each request
             "method": "POST",
             "url": "/v1/chat/completions",
-            "body": {
-                "model": "gpt-4-1106-preview",
-                "response_format": { "type": "json_object" },
-                "messages": [
-                    {"role": "user", "content": formatted_prompt}
-                ],
-                "temperature": 0,
-                "frequency_penalty": 0,
-                "presence_penalty": 0,
-            }
+            "body": get_openai_request_body(formatted_prompt)
         }
         formatted_data.append(batch_request)
 

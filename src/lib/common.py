@@ -1,5 +1,21 @@
 import jsonlines
 
+def get_openai_request_body(prompt):
+    """
+    Prepare the request body for OpenAI API
+    """
+    return {
+        "model": "gpt-4-1106-preview",
+        "response_format": { "type": "json_object" },
+        "messages": [
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0,
+        "frequency_penalty": 0,
+        "presence_penalty": 0,
+    }
+
+
 def read_jsonl(file_path):
     """
     Read data from a JSONL file
@@ -8,7 +24,7 @@ def read_jsonl(file_path):
         return [obj for obj in reader]
 
 
-def _validate_schema(response: dict):
+def _validate_response(response: dict):
     """response を JSON としてパースし、下記のスキーマに合致することを確かめる
     {"reason": "<評価理由>", "grade": <int, 1～5の5段階評価>}
 

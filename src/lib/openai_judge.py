@@ -3,7 +3,7 @@ import json
 from openai import OpenAI
 from tenacity import retry, stop_after_attempt, wait_random_exponential
 
-from lib.common import _validate_schema
+from lib.common import _validate_response, get_openai_request_body
 from lib.openai_client import client, template_prompt
 
 
@@ -27,19 +27,11 @@ def evaluate(pred, input_text, output_text, eval_aspect):
     )
 
     response_raw = completion_with_backoff(
-        model="gpt-4-1106-preview",
-        #model="gpt-3.5-turbo-1106",
-        response_format={ "type": "json_object" },
-        messages=[
-            {"role": "user", "content": prompt},
-        ],
-        temperature=0,
-        frequency_penalty=0,
-        presence_penalty=0,
+        **get_openai_request_body(prompt)
     )
     response = json.loads(response_raw.choices[0].message.content)
 
-    _validate_schema(response)
+    _validate_response(response)
 
     return response
 
