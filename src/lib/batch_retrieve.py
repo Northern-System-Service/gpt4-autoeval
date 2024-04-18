@@ -26,6 +26,40 @@ def download_results(client, file_id):
     return client.files.retrieve_content(file_id)
 
 
+def reorder_results(results, request_file_path):
+    """
+    Reorder the results based on the original request order using custom_id.
+    """
+    # Load the original request order
+    request_order = {}
+    with jsonlines.open(request_file_path) as reader:
+        for index, record in enumerate(reader):
+            request_order[record['custom_id']] = index
+
+    # Parse the results into a dictionary keyed by custom_id
+    results_dict = {}
+    input_stream = StringIO(results)
+    reader = jsonlines.Reader(input_stream)
+    for record in reader:
+        custom_id = record['custom_id']
+        results_dict[custom_id] = record
+
+    # Create a new list of results ordered according to the original requests
+    ordered_results = [None] * len(request_order)
+    for custom_id, index in request_order.items():
+        ordered_results[index] = results_dict[custom_id]
+
+    # Convert the ordered results back into a JSONL string
+    output_stream = StringIO()
+    writer = jsonlines.Writer(output_stream)
+    for result in ordered_results:
+        if result is not None:
+            writer.write(result)
+    writer.close()
+
+    return output_stream.getvalue()
+
+
 def format_results(results):
     """
     Process the raw results to extract the 'content' field, and return formatted results.
@@ -65,6 +99,9 @@ def validate_results(file_path):
 
 
 def main():
+    request_file_path = asset_base_path / 'batch_job_requests.jsonl'
+    results_file_path = asset_base_path / 'result.jsonl'
+
     # Load the batch ID from file
     with open(asset_base_path / 'batch_id.txt', 'r') as f:
         batch_id = f.read().strip()
@@ -80,17 +117,17 @@ def main():
         if output_file_id:
             # Download the results
             results = download_results(client, output_file_id)
+            results = reorder_results(results, request_file_path)
             formatted_results = format_results(results)
-            results_path = asset_base_path / 'result.jsonl'
 
-            with open(results_path, 'w') as f:
+            with open(results_file_path, 'w') as f:
                 f.write(formatted_results)
 
             print("Results have been saved.")
 
             # Validate the results
             # Does not raise an exception, just prints out the anomalies
-            anomalies = validate_results(results_path)
+            anomalies = validate_results(results_file_path)
             if anomalies:
                 print("Anomalies found in the results:")
                 for index, error in anomalies:
