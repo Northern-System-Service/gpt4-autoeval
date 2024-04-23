@@ -8,6 +8,7 @@
  * Changelog:
  * 2023-12-11 新規作成
  * 2023-12-20 コメントの追加
+ * 2024-04-23 開始列を修正（CZ->E）
  */
 
 /**
@@ -17,7 +18,7 @@
 function main() {
   var folderPath = 'llm_research/migration'; // クロールするフォルダのパス
   var startRow = 3; // 開始行
-  var startColumnLetter = "CZ"; // 開始列
+  var startColumnLetter = "E"; // 開始列
   var startColumn = columnToNumber(startColumnLetter);
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet(); // アクティブなシートを取得
 
