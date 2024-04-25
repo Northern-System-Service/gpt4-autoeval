@@ -4,9 +4,8 @@ import uuid
 
 import jsonlines
 
-from lib.openai_judge import template_prompt
+from lib.client_openai import client, template_prompt
 from lib.common import get_openai_request_body, read_jsonl
-from lib.openai_client import client
 
 asset_base_path = Path("assets") / os.environ.get("DATASET_NAME")
 

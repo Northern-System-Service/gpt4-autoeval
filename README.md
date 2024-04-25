@@ -4,8 +4,8 @@ GPT-4 などの LLM を用いて、言語モデルの応答を自動評価する
 
 ## 対応する言語モデル
 
-* GPT-4
-* Cohere
+* `openai/gpt-4`: OpenAI GPT-4 API
+* `cohere/command-r-plus`: Cohere Command-R+ API
 
 ## 使用方法
 
@@ -58,7 +58,7 @@ my-OPeNAiKeY...
 #### `sequential` モード
 
 ```console
-$ DATASET_NAME=<DATASET_NAME> docker compose up --build
+$ DATASET_NAME=<DATASET_NAME> JUDGE=openai/gpt-4 docker compose up --build
 ```
 
 評価結果は JSONL 形式で `assets/<DATASET_NAME>/result.jsonl` に保存される。
@@ -97,7 +97,7 @@ myCohereKey...
 その後、下記コマンドを実行する。
 
 ```console
-$ DATASET_NAME=<DATASET_NAME> JUDGE=command-r-plus docker compose up --build
+$ DATASET_NAME=<DATASET_NAME> JUDGE=cohere/command-r-plus docker compose up --build
 ```
 
 評価結果は JSONL 形式で `assets/<DATASET_NAME>/result.jsonl` に保存される。

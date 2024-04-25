@@ -5,8 +5,8 @@ from pathlib import Path
 
 import jsonlines
 
-from lib.common import _validate_response
-from lib.openai_client import client
+from lib.common import validate_response
+from lib.client_openai import client
 
 asset_base_path = Path("assets") / os.environ.get("DATASET_NAME")
 
@@ -91,7 +91,7 @@ def validate_results(file_path):
     with jsonlines.open(file_path, mode='r') as reader:
         for i, record in enumerate(reader):
             try:
-                _validate_response(record)
+                validate_response(record)
             except ValueError as e:
                 anomalies.append((i, str(e)))
 

@@ -3,7 +3,7 @@ import os
 
 import jsonlines
 
-from lib import cmdr_plus_judge
+from . import cmdr_plus_judge
 from lib.common import read_jsonl
 
 

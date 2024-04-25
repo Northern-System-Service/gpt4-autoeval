@@ -2,9 +2,13 @@ import json
 import os
 
 import jsonlines
+from openai import OpenAI
+from tenacity import retry, stop_after_attempt, wait_random_exponential
 
-from lib import openai_judge
+from lib.client_openai import client, template_prompt
 from lib.common import read_jsonl
+from lib.common import validate_response, get_openai_request_body
+from . import openai_judge
 
 
 def main():
@@ -29,6 +33,7 @@ def main():
             print(f"A. {pred}")
             print(f"GPT-4. {result}")
             print(f"")
+
 
 if __name__ == "__main__":
     main()

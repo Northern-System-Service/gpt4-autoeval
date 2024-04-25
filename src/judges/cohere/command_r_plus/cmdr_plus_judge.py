@@ -5,8 +5,8 @@ import requests
 import time
 from tenacity import retry, stop_after_attempt, wait_random_exponential
 
-from lib.common import _validate_response
-from lib.cmdr_plus_client import client, template_prompt
+from lib.common import validate_response
+from lib.client_cohere import client, template_prompt
 
 
 @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(10))
@@ -53,6 +53,6 @@ def evaluate(pred, input_text, output_text, eval_aspect):
     )
     response = response_raw.tool_calls[0].parameters
 
-    _validate_response(response)
+    validate_response(response)
 
     return response
