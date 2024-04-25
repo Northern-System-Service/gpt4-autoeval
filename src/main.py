@@ -1,13 +1,25 @@
 import os
 
-
 # 動作モード (sequential, batch)
 process_mode = os.getenv('PROCESS_MODE', 'sequential')
 
 if process_mode == 'sequential':
-    # sequential モード: モデルの回答1つずつに対して評価を行う
-    from lib import sequential_process
-    sequential_process.main()
+    name_judge = os.getenv('JUDGE', 'gpt-4')
+
+    # openai/gpt-4
+    if name_judge == 'gpt-4':
+        from lib import sequential_process
+        sequential_process.main()
+
+    # cohere/command-r-plus
+    elif name_judge == 'command-r-plus':
+        from lib import sequential_process_cmdr_plus
+        sequential_process_cmdr_plus.main()
+
+    # TODO: ローカルモデル
+
+    else:
+        raise ValueError("Unknown JUDGE specified in ENV. Use 'gpt-4'.")
 
 elif process_mode == 'batch':
     # batch モード: モデルの回答をバッチで OpenAI API に送信し、結果を取得する
