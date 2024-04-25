@@ -1,5 +1,9 @@
 secrets/*
 !secrets/.gitkeep
+
+*.ipynb
+!notebooks/*.ipynb
+
 batch_id.txt
 batch_job_requests.jsonl
 
