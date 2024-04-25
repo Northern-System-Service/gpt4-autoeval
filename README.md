@@ -1,6 +1,11 @@
-# GPT-4 自動評価スクリプト
+# GPT-4（など）自動評価スクリプト
 
-GPT-4 を用いて、言語モデルの応答を自動評価するスクリプトである。
+GPT-4 などの LLM を用いて、言語モデルの応答を自動評価するスクリプトである。
+
+## 対応する言語モデル
+
+* `openai/gpt-4`: OpenAI GPT-4 API
+* `cohere/command-r-plus`: Cohere Command-R+ API
 
 ## 使用方法
 
@@ -36,14 +41,14 @@ assets/<DATASET_NAME>/
  - preds.jsonl
 ```
 
+### 評価: GPT-4 を使う場合
+
 OpenAI API キーを発行し ([link](https://platform.openai.com/api-keys))、 `secrets/OPENAI_API_KEY` に置く (行末は**改行しない**)。
 
 ```console
 $ cat secrets/OPENAI_API_KEY
 my-OPeNAiKeY...
 ```
-
-### 評価
 
 評価方法は、下記の2通りから選択できる。
 
@@ -53,7 +58,7 @@ my-OPeNAiKeY...
 #### `sequential` モード
 
 ```console
-$ DATASET_NAME=<DATASET_NAME> docker compose up --build
+$ DATASET_NAME=<DATASET_NAME> JUDGE=openai/gpt-4 docker compose up --build
 ```
 
 評価結果は JSONL 形式で `assets/<DATASET_NAME>/result.jsonl` に保存される。
@@ -79,6 +84,23 @@ $ DATASET_NAME=<DATASET_NAME> PROCESS_MODE=batch BATCH_TASK=retrieve \
 ジョブが未完了の場合は、その旨が表示される。
 
 ジョブが完了した場合、評価結果は JSONL 形式で `assets/<DATASET_NAME>/result.jsonl` に保存される。
+
+### 評価: Cohere API を使う場合
+
+Cohere API キーを発行し ([link](https://dashboard.cohere.com/api-keys))、 `secrets/COHERE_API_KEY` に置く (行末は**改行しない**)。
+
+```console
+$ cat secrets/COHERE_API_KEY
+myCohereKey...
+```
+
+その後、下記コマンドを実行する。
+
+```console
+$ DATASET_NAME=<DATASET_NAME> JUDGE=cohere/command-r-plus docker compose up --build
+```
+
+評価結果は JSONL 形式で `assets/<DATASET_NAME>/result.jsonl` に保存される。
 
 ### 結果の一覧表示
 

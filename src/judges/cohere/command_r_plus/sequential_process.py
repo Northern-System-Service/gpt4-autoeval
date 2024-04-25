@@ -3,7 +3,7 @@ import os
 
 import jsonlines
 
-from lib import openai_judge
+from . import cmdr_plus_judge
 from lib.common import read_jsonl
 
 
@@ -21,13 +21,13 @@ def main():
             output_text = eval_data["output_text"]
             eval_aspect = eval_data["eval_aspect"]
 
-            result = openai_judge.evaluate(pred, input_text, output_text, eval_aspect)
+            result = cmdr_plus_judge.evaluate(pred, input_text, output_text, eval_aspect)
             writer.write(result)
 
             print(f"==============================")
             print(f"Q. {input_text}")
             print(f"A. {pred}")
-            print(f"GPT-4. {result}")
+            print(f"CmdR+. {result}")
             print(f"")
 
 if __name__ == "__main__":
