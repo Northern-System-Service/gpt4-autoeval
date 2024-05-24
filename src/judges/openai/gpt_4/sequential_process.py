@@ -11,7 +11,7 @@ from lib.common import validate_response, get_openai_request_body
 from . import openai_judge
 
 
-def main():
+def main(model):
     # Load dataset
     dataset_name = os.environ.get('DATASET_NAME', 'test')
     preds = read_jsonl(f"assets/{dataset_name}/preds.jsonl")
@@ -25,15 +25,18 @@ def main():
             output_text = eval_data["output_text"]
             eval_aspect = eval_data["eval_aspect"]
 
-            result = openai_judge.evaluate(pred, input_text, output_text, eval_aspect)
+            result = openai_judge.evaluate(
+                pred, input_text, output_text, eval_aspect,
+                model=model
+            )
             writer.write(result)
 
             print(f"==============================")
             print(f"Q. {input_text}")
             print(f"A. {pred}")
-            print(f"GPT-4. {result}")
+            print(f"{model}. {result}")
             print(f"")
 
 
 if __name__ == "__main__":
-    main()
+    main(model="gpt-4-1106-preview")

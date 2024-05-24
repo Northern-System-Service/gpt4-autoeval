@@ -10,7 +10,7 @@ from lib.common import get_openai_request_body, read_jsonl
 asset_base_path = Path("assets") / os.environ.get("DATASET_NAME")
 
 
-def prepare_job_requests():
+def prepare_job_requests(model):
     """
     Prepare the job instructions for the batch job
     """
@@ -38,7 +38,7 @@ def prepare_job_requests():
             "custom_id": str(uuid.uuid4()),  # Generating a unique ID for each request
             "method": "POST",
             "url": "/v1/chat/completions",
-            "body": get_openai_request_body(formatted_prompt)
+            "body": get_openai_request_body(formatted_prompt, model)
         }
         formatted_data.append(batch_request)
 
@@ -78,8 +78,8 @@ def create_batch(client, input_file_id):
     return response.id
 
 
-def main():
-    job_requests = prepare_job_requests()
+def main(model):
+    job_requests = prepare_job_requests(model)
     prepare_jsonl_data(job_requests)
 
     file_id = upload_file(client)
