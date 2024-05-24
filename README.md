@@ -4,7 +4,10 @@ GPT-4 などの LLM を用いて、言語モデルの応答を自動評価する
 
 ## 対応する言語モデル
 
-* `openai/gpt-4`: OpenAI GPT-4 API
+評価者のLLMとして、下記のモデルを選択できる。モデル名は `JUDGE` 環境変数で指定する。
+
+* `openai/gpt-4`: OpenAI GPT-4 Turbo API
+* `openai/gpt-4o`: OpenAI GPT-4o API
 * `cohere/command-r-plus`: Cohere Command-R+ API
 
 ## 使用方法
@@ -58,7 +61,7 @@ my-OPeNAiKeY...
 #### `sequential` モード
 
 ```console
-$ DATASET_NAME=<DATASET_NAME> JUDGE=openai/gpt-4 docker compose up --build
+$ DATASET_NAME=<DATASET_NAME> JUDGE=openai/gpt-4o docker compose up --build
 ```
 
 評価結果は JSONL 形式で `assets/<DATASET_NAME>/result.jsonl` に保存される。
@@ -69,6 +72,7 @@ $ DATASET_NAME=<DATASET_NAME> JUDGE=openai/gpt-4 docker compose up --build
 
 ```console
 $ DATASET_NAME=<DATASET_NAME> PROCESS_MODE=batch BATCH_TASK=submit \
+  JUDGE=openai/gpt-4o \
         docker compose up --build
 ```
 
@@ -105,6 +109,15 @@ $ DATASET_NAME=<DATASET_NAME> JUDGE=cohere/command-r-plus docker compose up --bu
 ### 結果の一覧表示
 
 Google スプレッドシートで結果を一覧表示する場合（[表示例](https://docs.google.com/spreadsheets/d/1nOWtneRdrkxwQbAN0rWmXqiJXR9IXK9lVkyDjQTqNGc/edit?usp=sharing)）は、 `<DATASET_NAME>/{preds,results}.jsonl` を Google Drive にコピーし、`tools/copy_jsonl_to_google_spreadsheet.js` を Google Apps Script として実行する。
+
+## 環境変数一覧
+
+| 変数名 | とりうる値 | デフォルト値 | 説明 |
+| --- | --- | --- | --- |
+| `DATASET_NAME` | - | - | データセット名。`assets/<DATASET_NAME>` にデータセットを配置する |
+| `PROCESS_MODE` | `sequential`, `batch` | `sequential` | 評価モード。`batch` は OpenAI API のみ対応 |
+| `JUDGE` | `openai/gpt-4`, `openai/gpt-4o`, `cohere/command-r-plus` | `openai/gpt-4` | 評価者のLLM |
+| `BATCH_TASK` | `submit`, `retrieve` | `submit` | バッチ推論のタスク。`PROCESS_MODE=batch` 以外のときは無視される |
 
 ## 動作環境
 
