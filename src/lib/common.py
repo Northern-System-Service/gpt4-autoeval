@@ -1,11 +1,11 @@
 import jsonlines
 
-def get_openai_request_body(prompt):
+def get_openai_request_body(prompt, model="gpt-4-1106-preview"):
     """
     Prepare the request body for OpenAI API
     """
     return {
-        "model": "gpt-4-1106-preview",
+        "model": model,
         "response_format": { "type": "json_object" },
         "messages": [
             {"role": "user", "content": prompt}

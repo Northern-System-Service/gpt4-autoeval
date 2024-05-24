@@ -2,15 +2,22 @@ import os
 
 def main():
     # 動作モード (sequential, batch)
-    process_mode = os.getenv('PROCESS_MODE', 'sequential')
+    process_mode = os.getenv('PROCESS_MODE', default='sequential')
+    openai_models = {
+        'openai/gpt-4': 'gpt-4-1106-preview',
+        'openai/gpt-4o': 'gpt-4o-2024-05-13',
+    }
 
     if process_mode == 'sequential':
-        name_judge = os.getenv('JUDGE', 'openai/gpt-4')
+        name_judge = os.getenv('JUDGE', default='openai/gpt-4')
 
-        # openai/gpt-4
-        if name_judge == 'openai/gpt-4':
+        # openai/gpt-4, openai/gpt-4o
+        if name_judge in ('openai/gpt-4', 'openai/gpt-4o'):
             from judges.openai.gpt_4 import sequential_process
-            sequential_process.main()
+
+            model= openai_models[name_judge]
+            sequential_process.main(model=model)
+
             return
 
         # cohere/command-r-plus
@@ -29,12 +36,14 @@ def main():
 
     # batch モード: モデルの回答をバッチで OpenAI API に送信し、結果を取得する
     elif process_mode == 'batch':
-        task = os.getenv('BATCH_TASK', 'submit')
+        task = os.getenv('BATCH_TASK', default='submit')
+        name_judge = os.getenv('JUDGE', default='openai/gpt-4')
+        model = openai_models[name_judge]
 
         if task == 'submit':
             # submit タスク: バッチジョブを作成し、OpenAI API に送信する
             from judges.openai.gpt_4 import batch_submit
-            batch_submit.main()
+            batch_submit.main(model=model)
             return
 
         elif task == 'retrieve':
